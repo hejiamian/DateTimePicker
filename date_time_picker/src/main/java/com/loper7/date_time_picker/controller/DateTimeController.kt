@@ -1,6 +1,5 @@
 package com.loper7.date_time_picker.controller
 
-import android.util.Log
 import com.loper7.date_time_picker.DateTimeConfig
 import com.loper7.date_time_picker.DateTimeConfig.DAY
 import com.loper7.date_time_picker.DateTimeConfig.HOUR
@@ -8,15 +7,14 @@ import com.loper7.date_time_picker.DateTimeConfig.MIN
 import com.loper7.date_time_picker.DateTimeConfig.MONTH
 import com.loper7.date_time_picker.DateTimeConfig.SECOND
 import com.loper7.date_time_picker.DateTimeConfig.YEAR
-import com.loper7.date_time_picker.ext.*
 import com.loper7.date_time_picker.ext.getMaxDayInMonth
 import com.loper7.date_time_picker.ext.isSameDay
+import com.loper7.date_time_picker.ext.isSameHour
+import com.loper7.date_time_picker.ext.isSameMinute
 import com.loper7.date_time_picker.ext.isSameMonth
 import com.loper7.date_time_picker.ext.isSameYear
 import com.loper7.date_time_picker.number_picker.NumberPicker
-import com.loper7.date_time_picker.utils.StringUtils
-import java.util.*
-import kotlin.math.min
+import java.util.Calendar
 
 /**
  *
@@ -169,8 +167,8 @@ open class DateTimeController : BaseDateTimeController() {
         mYearSpinner?.apply { calendar.set(Calendar.YEAR, value) }
         mMonthSpinner?.apply { calendar.set(Calendar.MONTH, (value - 1)) }
 
-        var maxDayInMonth = getMaxDayInMonth(mYearSpinner?.value, (mMonthSpinner?.value ?: 0) - 1)
-        if (mDaySpinner?.value ?: 0 >= maxDayInMonth) {
+        val maxDayInMonth = getMaxDayInMonth(mYearSpinner?.value, (mMonthSpinner?.value ?: 0) - 1)
+        if ((mDaySpinner?.value ?: 0) >= maxDayInMonth) {
             mDaySpinner?.value = maxDayInMonth
         }
 
@@ -201,7 +199,9 @@ open class DateTimeController : BaseDateTimeController() {
             calendar.clear()
             calendar.timeInMillis = maxCalendar.timeInMillis
         }
-        var maxDayInMonth = getMaxDayInMonth(calendar?.get(Calendar.YEAR), calendar?.get(Calendar.MONTH))
+        val maxDayInMonth = getMaxDayInMonth(calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH)
+        )
 
         mMonthSpinner?.apply {
             minValue =
@@ -239,7 +239,7 @@ open class DateTimeController : BaseDateTimeController() {
         mMinuteSpinner?.value = calendar.get(Calendar.MINUTE)
         mSecondSpinner?.value = calendar.get(Calendar.SECOND)
 
-        if (mDaySpinner?.value ?: 0 >= maxDayInMonth) {
+        if ((mDaySpinner?.value ?: 0) >= maxDayInMonth) {
             mDaySpinner?.value = maxDayInMonth
         }
 
@@ -257,24 +257,21 @@ open class DateTimeController : BaseDateTimeController() {
 
     override fun setMinMillisecond(time: Long) {
         if (time == 0L) return
-        if (maxCalendar?.timeInMillis in 1 until time) return
-        if (minCalendar == null)
-            minCalendar = Calendar.getInstance()
-        minCalendar?.timeInMillis = time
-        mYearSpinner?.minValue = minCalendar?.get(Calendar.YEAR)
+        if (maxCalendar.timeInMillis in 1 until time) return
+        minCalendar.timeInMillis = time
+        mYearSpinner?.minValue = minCalendar.get(Calendar.YEAR)
 
         setDefaultMillisecond(calendar.timeInMillis)
     }
 
     override fun setMaxMillisecond(time: Long) {
         if (time == 0L) return
-        if (minCalendar?.timeInMillis > 0L && time < minCalendar?.timeInMillis) return
-        if (maxCalendar == null)
-            maxCalendar = Calendar.getInstance()
-        maxCalendar?.timeInMillis = time
+        if (minCalendar.timeInMillis > 0L && time < minCalendar.timeInMillis) {
+            return
+        }
+        maxCalendar.timeInMillis = time
 
-        mYearSpinner?.maxValue =
-            maxCalendar?.get(Calendar.YEAR)
+        mYearSpinner?.maxValue = maxCalendar.get(Calendar.YEAR)
 
         setDefaultMillisecond(calendar.timeInMillis)
     }

@@ -2,7 +2,6 @@ package com.loper7.datepicker
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_custom_picker.*
 
 /**
  *

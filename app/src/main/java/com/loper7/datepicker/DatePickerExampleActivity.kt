@@ -10,8 +10,7 @@ import android.util.Log
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.loper7.date_time_picker.DateTimeConfig
 import com.loper7.date_time_picker.dialog.CardDatePickerDialog
-import com.loper7.date_time_picker.dialog.CardWeekPickerDialog
-import kotlinx.android.synthetic.main.activity_date_picker_example.*
+import com.loper7.datepicker.databinding.ActivityDatePickerExampleBinding
 
 class DatePickerExampleActivity : AppCompatActivity() {
 
@@ -21,116 +20,118 @@ class DatePickerExampleActivity : AppCompatActivity() {
     private var defaultDate: Long = 0
 
     private lateinit var context: Context
+    private lateinit var binding:ActivityDatePickerExampleBinding
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_date_picker_example)
+        binding = ActivityDatePickerExampleBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         context = this
 
 
-        tvMaxDate.setOnClickListener {
+        binding.tvMaxDate.setOnClickListener {
             CardDatePickerDialog.builder(this)
                 .setTitle("SET MAX DATE")
                 .setDefaultTime(maxDate)
                 .setOnChoose {
                     maxDate = it
-                    tvMaxDate.text = StringUtils.conversionTime(it, "yyyy-MM-dd HH:mm:ss")
+                    binding.tvMaxDate.text = StringUtils.conversionTime(it, "yyyy-MM-dd HH:mm:ss")
                 }.build().show()
         }
 
 
-        btnClearMax.setOnClickListener {
+        binding.btnClearMax.setOnClickListener {
             maxDate = 0L
-            tvMaxDate.text = ""
+            binding.tvMaxDate.text = ""
         }
 
-        tvMinDate.setOnClickListener {
+        binding.tvMinDate.setOnClickListener {
             CardDatePickerDialog.builder(this)
                 .setTitle("SET MIN DATE")
                 .setDefaultTime(minDate)
                 .setOnChoose {
                     minDate = it
-                    tvMinDate.text = StringUtils.conversionTime(it, "yyyy-MM-dd HH:mm:ss")
+                    binding.tvMinDate.text = StringUtils.conversionTime(it, "yyyy-MM-dd HH:mm:ss")
                 }.build().show()
         }
 
-        btnClearMin.setOnClickListener {
+        binding.btnClearMin.setOnClickListener {
             minDate = 0L
-            tvMinDate.text = ""
+            binding.tvMinDate.text = ""
         }
 
-        tvDefaultDate.setOnClickListener {
+        binding.tvDefaultDate.setOnClickListener {
             CardDatePickerDialog.builder(this)
                 .setTitle("SET DEFAULT DATE")
                 .setDefaultTime(defaultDate)
                 .setOnChoose {
                     defaultDate = it
-                    tvDefaultDate.text =
+                    binding.tvDefaultDate.text =
                         StringUtils.conversionTime(it, "yyyy-MM-dd HH:mm:ss")
                 }.build().show()
         }
 
-        btnClearDefault.setOnClickListener {
+        binding.btnClearDefault.setOnClickListener {
             defaultDate = 0L
-            tvDefaultDate.text = ""
+            binding.tvDefaultDate.text = ""
         }
 
-        rgPickerLayout.setOnCheckedChangeListener { group, checkedId ->
+        binding.rgPickerLayout.setOnCheckedChangeListener { group, checkedId ->
             //自定义布局下防止页面出现不必要显示异常，禁止变更显示选择项
-            checkYear.isEnabled = checkedId == R.id.radioPickerDefault
-            checkMonth.isEnabled = checkedId == R.id.radioPickerDefault
-            checkDay.isEnabled = checkedId == R.id.radioPickerDefault
-            checkHour.isEnabled = checkedId == R.id.radioPickerDefault
-            checkMin.isEnabled = checkedId == R.id.radioPickerDefault
-            checkSecond.isEnabled = checkedId == R.id.radioPickerDefault
+            binding.checkYear.isEnabled = checkedId == R.id.radioPickerDefault
+            binding.checkMonth.isEnabled = checkedId == R.id.radioPickerDefault
+            binding.checkDay.isEnabled = checkedId == R.id.radioPickerDefault
+            binding.checkHour.isEnabled = checkedId == R.id.radioPickerDefault
+            binding.checkMin.isEnabled = checkedId == R.id.radioPickerDefault
+            binding.checkSecond.isEnabled = checkedId == R.id.radioPickerDefault
         }
 
-        btnCardDialogShow.setOnClickListener {
+        binding.btnCardDialogShow.setOnClickListener {
             var displayList: MutableList<Int>? = mutableListOf()
-            if (checkYear.isChecked)
+            if (binding.checkYear.isChecked)
                 displayList?.add(DateTimeConfig.YEAR)
-            if (checkMonth.isChecked)
+            if (binding.checkMonth.isChecked)
                 displayList?.add(DateTimeConfig.MONTH)
-            if (checkDay.isChecked)
+            if (binding.checkDay.isChecked)
                 displayList?.add(DateTimeConfig.DAY)
-            if (checkHour.isChecked)
+            if (binding.checkHour.isChecked)
                 displayList?.add(DateTimeConfig.HOUR)
-            if (checkMin.isChecked)
+            if (binding.checkMin.isChecked)
                 displayList?.add(DateTimeConfig.MIN)
-            if (checkSecond.isChecked)
+            if (binding.checkSecond.isChecked)
                 displayList?.add(DateTimeConfig.SECOND)
 
 
             var model = CardDatePickerDialog.CARD
-            if (radioModelCard.isChecked)
+            if (binding.radioModelCard.isChecked)
                 model = CardDatePickerDialog.CARD
-            if (radioModelCube.isChecked)
+            if (binding.radioModelCube.isChecked)
                 model = CardDatePickerDialog.CUBE
-            if (radioModelStack.isChecked)
+            if (binding.radioModelStack.isChecked)
                 model = CardDatePickerDialog.STACK
-            if (radioModelCustom.isChecked)
+            if (binding.radioModelCustom.isChecked)
                 model = R.drawable.shape_bg_dialog_custom
 
             var pickerLayout = 0
-            if (radioPickerDefault.isChecked)
+            if (binding.radioPickerDefault.isChecked)
                 pickerLayout = 0
-            if (radioPickerSegmentation.isChecked) {
+            if (binding.radioPickerSegmentation.isChecked) {
                 displayList = null
                 pickerLayout = R.layout.layout_date_picker_segmentation
             }
-            if (radioPickerGrid.isChecked) {
+            if (binding.radioPickerGrid.isChecked) {
                 displayList = null
                 pickerLayout = R.layout.layout_date_picker_grid
             }
 
 
-            var dialog = CardDatePickerDialog.builder(context)
+            val dialog = CardDatePickerDialog.builder(context)
                 .setTitle("DATE&TIME PICKER")
                 .setDisplayType(displayList)
                 .setBackGroundModel(model)
 //                .setBackGroundModel(if(isDark) R.drawable.shape_bg_dialog_dark else R.drawable.shape_bg_dialog_light)
-                .showBackNow(checkBackNow.isChecked)
+                .showBackNow(binding.checkBackNow.isChecked)
                 .setMaxTime(maxDate)
                 .setPickerLayout(pickerLayout)
                 .setMinTime(minDate)
@@ -141,10 +142,10 @@ class DatePickerExampleActivity : AppCompatActivity() {
                 .setThemeColor(if (model == R.drawable.shape_bg_dialog_custom) Color.parseColor("#FF8000") else 0)
 //                .setAssistColor(Color.parseColor("#DDFFFFFF"))
 //                .setDividerColor(Color.parseColor("#222222"))
-                .showDateLabel(checkUnitLabel.isChecked)
-                .showFocusDateInfo(checkDateInfo.isChecked)
+                .showDateLabel(binding.checkUnitLabel.isChecked)
+                .showFocusDateInfo(binding.checkDateInfo.isChecked)
                 .setOnChoose("选择") {
-                    btnCardDialogShow.text = "${
+                    binding.btnCardDialogShow.text = "${
                         StringUtils.conversionTime(
                             it,
                             "yyyy-MM-dd HH:mm:ss"

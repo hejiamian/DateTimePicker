@@ -2,16 +2,14 @@ package com.loper7.datepicker
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.loper7.date_time_picker.DateTimeConfig
 import com.loper7.date_time_picker.dialog.CardDatePickerDialog
 import com.loper7.date_time_picker.dialog.CardWeekPickerDialog
 import com.loper7.date_time_picker.number_picker.NumberPicker
-import kotlinx.android.synthetic.main.activity_week_picker_example.*
+import com.loper7.datepicker.databinding.ActivityWeekPickerExampleBinding
 
 class WeekPickerExampleActivity : AppCompatActivity() {
 
@@ -22,74 +20,77 @@ class WeekPickerExampleActivity : AppCompatActivity() {
 
     private lateinit var context: Context
 
+    private lateinit var binding:ActivityWeekPickerExampleBinding
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_week_picker_example)
+        binding = ActivityWeekPickerExampleBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         context = this
 
 
-        tvMaxDate.setOnClickListener {
+        binding.tvMaxDate.setOnClickListener {
             CardDatePickerDialog.builder(this)
                 .setTitle("SET MAX DATE")
                 .setDisplayType(DateTimeConfig.YEAR,DateTimeConfig.MONTH,DateTimeConfig.DAY)
                 .setDefaultTime(maxDate)
                 .setOnChoose {
                     maxDate = it
-                    tvMaxDate.text = StringUtils.conversionTime(it, "yyyy-MM-dd")
+                    binding.tvMaxDate.text = StringUtils.conversionTime(it, "yyyy-MM-dd")
                 }.build().show()
 
         }
 
 
-        btnClearMax.setOnClickListener {
+        binding.btnClearMax.setOnClickListener {
             maxDate = 0L
-            tvMaxDate.text = ""
+            binding.tvMaxDate.text = ""
         }
 
-        tvMinDate.setOnClickListener {
+        binding.tvMinDate.setOnClickListener {
             CardDatePickerDialog.builder(this)
                 .setTitle("SET MIN DATE")
                 .setDisplayType(DateTimeConfig.YEAR,DateTimeConfig.MONTH,DateTimeConfig.DAY)
                 .setDefaultTime(minDate)
                 .setOnChoose {
                     minDate = it
-                    tvMinDate.text = StringUtils.conversionTime(it, "yyyy-MM-dd")
+                    binding.tvMinDate.text = StringUtils.conversionTime(it, "yyyy-MM-dd")
                 }.build().show()
         }
 
-        btnClearMin.setOnClickListener {
+        binding.btnClearMin.setOnClickListener {
             minDate = 0L
-            tvMinDate.text = ""
+            binding.tvMinDate.text = ""
         }
 
-        tvDefaultDate.setOnClickListener {
+        binding.tvDefaultDate.setOnClickListener {
             CardDatePickerDialog.builder(this)
                 .setTitle("SET DEFAULT DATE")
                 .setDefaultTime(defaultDate)
                 .setDisplayType(DateTimeConfig.YEAR,DateTimeConfig.MONTH,DateTimeConfig.DAY)
                 .setOnChoose {
                     defaultDate = it
-                    tvDefaultDate.text =
+                    binding.tvDefaultDate.text =
                         StringUtils.conversionTime(it, "yyyy-MM-dd")
                 }.build().show()
         }
 
-        btnClearDefault.setOnClickListener {
+        binding.btnClearDefault.setOnClickListener {
             defaultDate = 0L
-            tvDefaultDate.text = ""
+            binding.tvDefaultDate.text = ""
         }
 
-        btnCardDialogShow.setOnClickListener {
+        binding.btnCardDialogShow.setOnClickListener {
 
             var model = CardDatePickerDialog.CARD
-            if (radioModelCard.isChecked)
+            if (binding.radioModelCard.isChecked)
                 model = CardDatePickerDialog.CARD
-            if (radioModelCube.isChecked)
+            if (binding.radioModelCube.isChecked)
                 model = CardDatePickerDialog.CUBE
-            if (radioModelStack.isChecked)
+            if (binding.radioModelStack.isChecked)
                 model = CardDatePickerDialog.STACK
-            if (radioModelCustom.isChecked)
+            if (binding.radioModelCustom.isChecked)
                 model = R.drawable.shape_bg_dialog_custom
 
 
@@ -106,13 +107,13 @@ class WeekPickerExampleActivity : AppCompatActivity() {
 //                .setDividerColor(Color.parseColor("#222222"))
                 .setFormatter {
                     NumberPicker.Formatter { value: Int ->
-                        var weekData = it[value - 1].toFormatList("MM月dd日")
-                        var str = "从${weekData.first()}  开始到  ${weekData.last()}结束"
+                        val weekData = it[value - 1].toFormatList("MM月dd日")
+                        val str = "从${weekData.first()}  开始到  ${weekData.last()}结束"
                         str
                     }
                 }
                 .setOnChoose("选择") {weekData,formatValue ->
-                    btnCardDialogShow.text = formatValue
+                    binding.btnCardDialogShow.text = formatValue
                 }
                 .setOnCancel("关闭") {
                 }.build().show()
@@ -125,7 +126,7 @@ class WeekPickerExampleActivity : AppCompatActivity() {
  * @return MutableList<String> [2021-09-09,2021--09-10,...]
  */
 internal fun MutableList<Long>.toFormatList(format: String = "yyyy-MM-dd"): MutableList<String> {
-    var formatList = mutableListOf<String>()
+    val formatList = mutableListOf<String>()
     for (i in this) {
         formatList.add(StringUtils.conversionTime(i, format))
     }
